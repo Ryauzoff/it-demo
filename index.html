@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow" data-publish>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Северный код – разработка программного обеспечения</title>
+<meta name="description" content="Разрабатываем веб-сервисы, CRM и мобильные приложения для бизнеса. Фиксируем цену и сроки до старта.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --ink:#111827; --ink-2:#4b5567; --line:#d9dee7;
+  --accent:#1f4fd8; --accent-ink:#ffffff; --deep:#0d1424; --deep-ink:#e8ecf4; --deep-2:#9aa6bd;
+  --r:14px; --measure:62ch;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;--s9:96px;--s10:128px;
+  --section:clamp(72px,10vw,140px);
+  --shadow:0 1px 2px rgba(17,24,39,.06),0 8px 24px -8px rgba(17,24,39,.12);
+  --display:"Unbounded",system-ui,sans-serif; --text:"Onest",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--text);overflow-x:hidden}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.02;letter-spacing:-.025em;text-wrap:balance}
+p{text-wrap:pretty}
+.wrap{width:min(1200px,100% - 32px);margin-inline:auto}
+@media(min-width:720px){.wrap{width:min(1200px,100% - 64px)}}
+
+/* кнопка – одна подпись на весь сайт */
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:var(--accent-ink);
+  font:600 16px/1 var(--text);padding:18px 26px;border-radius:var(--r);border:0;cursor:pointer;text-decoration:none;
+  transition:transform .15s ease-out,background-color .15s ease-out}
+.btn:active{transform:scale(.97)}
+.btn svg{width:18px;height:18px}
+@media(hover:hover) and (pointer:fine){.btn:hover{background:#1a43b8}}
+.btn--sm{padding:12px 18px;font-size:15px;white-space:nowrap}
+@media(max-width:420px){.btn--sm{padding:10px 14px;font-size:14px}.logo{font-size:15px}.logo i{width:22px;height:22px}}
+
+/* шапка */
+.top{position:sticky;top:0;z-index:20;background:rgba(243,245,248,.86);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .2s ease-out}
+.top.is-scrolled{border-bottom-color:var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:var(--s4)}
+.logo{white-space:nowrap;display:flex;align-items:center;gap:10px;font:700 17px/1 var(--display);letter-spacing:-.02em;text-decoration:none}
+.logo i{width:26px;height:26px;border-radius:7px;background:var(--accent);display:grid;place-items:center}
+.logo i::before{content:"";width:10px;height:10px;border:2.5px solid #fff;border-radius:2px;transform:rotate(45deg)}
+.nav{display:none;gap:var(--s6);font-size:15px;color:var(--ink-2)}
+.nav a{text-decoration:none;transition:color .15s ease-out}
+@media(hover:hover) and (pointer:fine){.nav a:hover{color:var(--ink)}}
+@media(min-width:900px){.nav{display:flex}}
+
+/* hero */
+.hero{padding:clamp(48px,8vw,104px) 0 clamp(56px,8vw,112px);position:relative}
+.hero .wrap{display:grid;gap:var(--s8);align-items:center}
+@media(min-width:960px){.hero .wrap{grid-template-columns:minmax(0,1.5fr) minmax(300px,.8fr)}}
+.hero h1{font-size:clamp(32px,4.4vw,58px)}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p.lead{margin-top:var(--s5);font-size:clamp(17px,1.6vw,20px);color:var(--ink-2);max-width:46ch}
+.hero .cta{margin-top:var(--s7);display:flex;flex-wrap:wrap;align-items:center;gap:var(--s5)}
+.hero .note{font-size:15px;color:var(--ink-2)}
+.art{position:relative;aspect-ratio:1/1;max-width:480px;width:100%;justify-self:center}
+.art svg{width:100%;height:100%;overflow:visible}
+.art .l1{animation:float 9s ease-in-out infinite}
+.art .l2{animation:float 11s ease-in-out infinite reverse}
+.art .l3{animation:float 13s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-10px)}}
+
+/* секции */
+section{padding-block:var(--section)}
+.kicker{font:600 13px/1 var(--text);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:var(--s5)}
+.h2{font-size:clamp(28px,3.8vw,48px);max-width:20ch}
+.sub{margin-top:var(--s5);color:var(--ink-2);max-width:var(--measure);font-size:18px}
+
+/* цена бездействия – тёмный акт */
+.dark{background:var(--deep);color:var(--deep-ink);position:relative;overflow:hidden}
+.dark .h2{color:var(--deep-ink)}
+.dark .sub{color:var(--deep-2)}
+.pains{margin-top:var(--s8);display:grid;gap:0;border-top:1px solid rgba(232,236,244,.14)}
+.pain{display:grid;gap:var(--s3);padding:var(--s6) 0;border-bottom:1px solid rgba(232,236,244,.14)}
+@media(min-width:820px){.pain{grid-template-columns:5fr 7fr;gap:var(--s8);align-items:baseline}}
+.pain h3{font-size:clamp(20px,2vw,26px);letter-spacing:-.015em;line-height:1.15;color:var(--deep-ink)}
+.pain p{color:var(--deep-2);line-height:1.7;letter-spacing:.005em}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* услуги – асимметричная сетка, не одинаковые карточки */
+.services{margin-top:var(--s8);display:grid;gap:var(--s5)}
+@media(min-width:900px){.services{grid-template-columns:repeat(12,1fr)}}
+.svc{background:var(--surface);border-radius:var(--r);padding:clamp(24px,3vw,40px);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:var(--s4)}
+.svc h3{font-size:clamp(20px,2vw,26px);letter-spacing:-.015em;line-height:1.15}
+.svc p{color:var(--ink-2)}
+.svc ul{list-style:none;display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:auto;padding-top:var(--s3)}
+.svc li{font-size:14px;color:var(--ink-2);border:1px solid var(--line);padding:6px 12px;border-radius:999px}
+@media(min-width:900px){
+  .svc--a{grid-column:1/8;grid-row:span 2}
+  .svc--b{grid-column:8/13}
+  .svc--c{grid-column:8/13}
+  .svc--d{grid-column:1/13;flex-direction:row;align-items:center;justify-content:space-between;gap:var(--s8)}
+  .svc--d ul{margin-top:0;padding-top:0;justify-content:flex-end;max-width:46%}
+}
+.svc--a{background:var(--accent);color:var(--accent-ink)}
+.svc--a p{color:rgba(255,255,255,.82)}
+.svc--a li{color:#fff;border-color:rgba(255,255,255,.35)}
+.svc--a .big{font:700 clamp(26px,3vw,38px)/1.05 var(--display);letter-spacing:-.025em;margin-bottom:var(--s3)}
+.svc--a .mini{margin-top:var(--s5);width:100%;max-width:420px}
+
+/* этапы – лента */
+.steps{margin-top:var(--s8);display:grid;gap:var(--s7);counter-reset:s}
+@media(min-width:900px){.steps{grid-template-columns:repeat(4,1fr);gap:var(--s6)}}
+.step{position:relative;padding-top:var(--s6);border-top:2px solid var(--line)}
+.step::before{counter-increment:s;content:"";position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.step:first-child{border-top-color:var(--accent)}
+.step:first-child::before{background:var(--accent)}
+.step h3{font-size:19px;letter-spacing:-.01em;line-height:1.2}
+.step .when{font-size:14px;color:var(--accent);font-weight:600;margin-top:var(--s2)}
+.step p{margin-top:var(--s3);color:var(--ink-2);font-size:16px}
+
+/* гарантии – полоса */
+.terms{background:var(--surface);border-block:1px solid var(--line)}
+.terms .wrap{display:grid;gap:var(--s7)}
+@media(min-width:900px){.terms .wrap{grid-template-columns:1fr 1fr;gap:var(--s9);align-items:start}}
+.term-list{display:grid;gap:var(--s5)}
+.term{display:grid;grid-template-columns:28px 1fr;gap:var(--s4);align-items:start}
+.term svg{width:28px;height:28px;color:var(--accent)}
+.term b{display:block;font-weight:600}
+.term span{color:var(--ink-2);font-size:16px}
+
+/* работы – слот под портфолио */
+.cases{margin-top:var(--s8);display:grid;gap:var(--s5)}
+@media(min-width:900px){.cases{grid-template-columns:7fr 5fr}}
+.case{border-radius:var(--r);overflow:hidden;background:var(--surface);box-shadow:var(--shadow);display:flex;flex-direction:column}
+.case .pic{aspect-ratio:16/10;background:linear-gradient(135deg,#e4e9f2,#cfd8e8);display:grid;place-items:center;color:#6b778c;font-size:14px;text-align:center;padding:var(--s5)}
+.case .pic svg{width:44px;height:44px;margin:0 auto var(--s3);display:block;opacity:.7}
+.case .txt{padding:var(--s6)}
+.case h3{font-size:20px;letter-spacing:-.01em;line-height:1.2}
+.case p{margin-top:var(--s2);color:var(--ink-2);font-size:16px}
+
+/* финал – форма */
+.final{background:var(--deep);color:var(--deep-ink);position:relative;overflow:hidden}
+.final .wrap{display:grid;gap:var(--s8);position:relative}
+@media(min-width:960px){.final .wrap{grid-template-columns:1fr 1fr;align-items:start}}
+.final .h2{color:var(--deep-ink)}
+.final .sub{color:var(--deep-2)}
+.contacts{margin-top:var(--s7);display:grid;gap:var(--s3);color:var(--deep-2);font-size:16px}
+.contacts a{color:var(--deep-ink);text-decoration:none;font-weight:500}
+form{background:var(--surface);color:var(--ink);border-radius:var(--r);padding:clamp(24px,3vw,40px);display:grid;gap:var(--s4);box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+label{display:grid;gap:6px;font-size:14px;font-weight:500;color:var(--ink-2)}
+input,textarea,select{font:400 16px/1.4 var(--text);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;width:100%;transition:border-color .15s ease-out,box-shadow .15s ease-out}
+textarea{min-height:120px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(31,79,216,.15)}
+form .btn{justify-content:center;margin-top:var(--s2)}
+form small{font-size:13px;color:var(--ink-2)}
+.ok{display:none;text-align:center;padding:var(--s7) var(--s4)}
+.ok h3{font-size:24px}
+.ok p{margin-top:var(--s3);color:var(--ink-2)}
+form.is-sent > :not(.ok){display:none}
+form.is-sent .ok{display:block}
+
+footer{background:var(--deep);color:var(--deep-2);font-size:14px;padding:var(--s6) 0;border-top:1px solid rgba(232,236,244,.1)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s3)}
+
+/* появление */
+.rv{opacity:0;transform:translateY(18px) scale(.98);transition:opacity .6s ease-out,transform .6s ease-out}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rv{transform:none;transition:opacity .3s ease-out}
+  .art .l1,.art .l2,.art .l3{animation:none}
+}
+</style>
+</head>
+<body>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="logo" href="#"><i></i>Северный код</a>
+    <nav class="nav">
+      <a href="#services">Что делаем</a>
+      <a href="#process">Как работаем</a>
+      <a href="#cases">Проекты</a>
+      <a href="#contact">Контакты</a>
+    </nav>
+    <a class="btn btn--sm" href="#contact">Обсудить проект</a>
+  </div>
+</header>
+
+<main>
+  <!-- 1. Узнавание -->
+  <section class="hero" style="padding-top:clamp(48px,8vw,104px)">
+    <div class="wrap">
+      <div>
+        <h1 class="rv">Разрабатываем программы для бизнеса&nbsp;– <em>с&nbsp;ценой и сроком до старта</em></h1>
+        <p class="lead rv">Веб-сервисы, CRM и мобильные приложения под ваши процессы. Сначала прототип, потом код – без сюрпризов в смете.</p>
+        <div class="cta rv">
+          <a class="btn" href="#contact">Обсудить проект
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <span class="note">Ответим в течение рабочего дня</span>
+        </div>
+      </div>
+      <div class="art rv" aria-hidden="true">
+        <svg viewBox="0 0 480 480" fill="none">
+          <g class="l3"><rect x="40" y="70" width="300" height="300" rx="22" fill="#dfe5f0"/></g>
+          <g class="l2">
+            <rect x="100" y="120" width="320" height="250" rx="22" fill="#fff" stroke="#d9dee7"/>
+            <circle cx="128" cy="146" r="6" fill="#d9dee7"/><circle cx="148" cy="146" r="6" fill="#d9dee7"/><circle cx="168" cy="146" r="6" fill="#d9dee7"/>
+            <rect x="128" y="186" width="120" height="10" rx="5" fill="#1f4fd8"/>
+            <rect x="148" y="212" width="170" height="10" rx="5" fill="#c9d1df"/>
+            <rect x="148" y="238" width="130" height="10" rx="5" fill="#c9d1df"/>
+            <rect x="168" y="264" width="150" height="10" rx="5" fill="#c9d1df"/>
+            <rect x="148" y="290" width="90" height="10" rx="5" fill="#c9d1df"/>
+            <rect x="128" y="316" width="60" height="10" rx="5" fill="#1f4fd8" opacity=".5"/>
+          </g>
+          <g class="l1">
+            <rect x="290" y="250" width="150" height="150" rx="22" fill="#0d1424"/>
+            <path d="M335 305l-20 20 20 20M395 305l20 20-20 20M372 297l-14 56" stroke="#7fa0ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Цена бездействия -->
+  <section class="dark">
+    <div class="grain"></div>
+    <div class="wrap" style="position:relative">
+      <p class="kicker" style="color:#7fa0ff">Знакомо?</p>
+      <h2 class="h2 rv">Бизнес растёт, а процессы держатся на таблицах</h2>
+      <div class="pains">
+        <div class="pain rv">
+          <h3>Заявки теряются между мессенджерами и почтой</h3>
+          <p>Менеджеры ведут клиентов кто где, а руководитель узнаёт о сорванной сделке последним.</p>
+        </div>
+        <div class="pain rv">
+          <h3>Готовые сервисы не подходят под вашу работу</h3>
+          <p>Платите за десятки ненужных функций, а нужную всё равно делаете вручную в Excel.</p>
+        </div>
+        <div class="pain rv">
+          <h3>Подрядчик пропал, проект завис на середине</h3>
+          <p>Нет документации и доступа к коду – начинать приходится заново и платить второй раз.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Что делаем -->
+  <section id="services">
+    <div class="wrap">
+      <p class="kicker">Что делаем</p>
+      <h2 class="h2 rv">Пишем софт, который повторяет ваш процесс, а не ломает его</h2>
+      <div class="services">
+        <article class="svc svc--a rv">
+          <p class="big">Веб-сервисы и CRM</p>
+          <p>Личные кабинеты, учёт заказов и складов, внутренние порталы. Собираем вокруг того, как уже работают ваши люди, – чтобы внедрение не стало отдельным проектом.</p>
+          <svg class="mini" viewBox="0 0 420 120" fill="none" aria-hidden="true">
+            <rect x="0" y="10" width="120" height="100" rx="12" fill="rgba(255,255,255,.14)"/>
+            <rect x="150" y="10" width="120" height="100" rx="12" fill="rgba(255,255,255,.14)"/>
+            <rect x="300" y="10" width="120" height="100" rx="12" fill="rgba(255,255,255,.28)"/>
+            <rect x="16" y="30" width="70" height="8" rx="4" fill="#fff" opacity=".8"/>
+            <rect x="166" y="30" width="80" height="8" rx="4" fill="#fff" opacity=".8"/>
+            <rect x="316" y="30" width="60" height="8" rx="4" fill="#fff"/>
+            <rect x="16" y="56" width="88" height="34" rx="8" fill="#fff" opacity=".35"/>
+            <rect x="166" y="56" width="88" height="34" rx="8" fill="#fff" opacity=".35"/>
+            <rect x="316" y="56" width="88" height="34" rx="8" fill="#fff" opacity=".7"/>
+          </svg>
+          <ul><li>Личные кабинеты</li><li>CRM и учёт</li><li>Интеграции с 1С</li></ul>
+        </article>
+        <article class="svc svc--b rv">
+          <h3>Мобильные приложения</h3>
+          <p>iOS и Android для клиентов и сотрудников: запись, заказы, выездные бригады.</p>
+          <ul><li>iOS</li><li>Android</li><li>Push-уведомления</li></ul>
+        </article>
+        <article class="svc svc--c rv">
+          <h3>Автоматизация и боты</h3>
+          <p>Убираем ручную рутину: отчёты, рассылки, обработку заявок из Telegram.</p>
+          <ul><li>Telegram-боты</li><li>API</li><li>Отчёты</li></ul>
+        </article>
+        <article class="svc svc--d rv">
+          <div>
+            <h3>Поддержка после запуска</h3>
+            <p>Исправляем ошибки, обновляем и дорабатываем по мере роста бизнеса.</p>
+          </div>
+          <ul><li>Хостинг и мониторинг</li><li>Доработки</li><li>Резервные копии</li></ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Как работаем -->
+  <section id="process" style="padding-top:0">
+    <div class="wrap">
+      <p class="kicker">Как работаем</p>
+      <h2 class="h2 rv">Четыре шага от идеи до работающей программы</h2>
+      <div class="steps">
+        <div class="step rv">
+          <h3>Разбираем задачу</h3>
+          <p class="when">1–2 дня</p>
+          <p>Созвон, вопросы о процессах, список того, что программа должна уметь.</p>
+        </div>
+        <div class="step rv">
+          <h3>Показываем прототип</h3>
+          <p class="when">до недели</p>
+          <p>Кликабельные экраны: видно, как всё будет работать, ещё до кода. Фиксируем цену и срок.</p>
+        </div>
+        <div class="step rv">
+          <h3>Разрабатываем</h3>
+          <p class="when">по этапам</p>
+          <p>Каждые две недели – демонстрация готовой части. Оплата тоже по этапам.</p>
+        </div>
+        <div class="step rv">
+          <h3>Запускаем и сопровождаем</h3>
+          <p class="when">после сдачи</p>
+          <p>Обучаем сотрудников, передаём код и документацию, остаёмся на поддержке.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Условия -->
+  <section class="terms">
+    <div class="wrap">
+      <div>
+        <h2 class="h2 rv">Условия, которые записываем в договор</h2>
+        <p class="sub rv">Вы заранее знаете, сколько заплатите, когда получите результат и что будет вашим после сдачи.</p>
+      </div>
+      <div class="term-list">
+        <div class="term rv">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Фиксированная цена этапа</b><span>Смета утверждается после прототипа и не растёт по ходу работы.</span></div>
+        </div>
+        <div class="term rv">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Код и права – ваши</b><span>Передаём исходники, доступы и документацию. Можете работать с любым подрядчиком.</span></div>
+        </div>
+        <div class="term rv">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Гарантия на ошибки</b><span>Исправляем найденные после запуска ошибки бесплатно в гарантийный срок.</span></div>
+        </div>
+        <div class="term rv">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>Оплата по этапам</b><span>Платите за готовую и принятую часть, а не всю сумму вперёд.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Проекты (место под портфолио заказчика) -->
+  <section id="cases">
+    <div class="wrap">
+      <p class="kicker">Проекты</p>
+      <h2 class="h2 rv">Что мы уже сделали</h2>
+      <p class="sub rv">Здесь появятся ваши проекты: скриншот, задача клиента и что изменилось после запуска.</p>
+      <div class="cases">
+        <article class="case rv">
+          <div class="pic"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>Скриншот проекта</div></div>
+          <div class="txt"><h3>CRM для сети сервисных центров</h3><p>Пример подписи: задача клиента, что сделали, срок разработки.</p></div>
+        </article>
+        <article class="case rv">
+          <div class="pic"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>Скриншот приложения</div></div>
+          <div class="txt"><h3>Приложение для записи клиентов</h3><p>Пример подписи: для кого, какие функции, на каких платформах.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Действие -->
+  <section class="final" id="contact">
+    <div class="grain"></div>
+    <div class="wrap">
+      <div>
+        <h2 class="h2 rv">Расскажите о задаче – предложим решение и оценку</h2>
+        <p class="sub rv">Опишите в двух словах, что нужно автоматизировать. Перезвоним, зададим вопросы и пришлём план с ценой и сроком.</p>
+        <div class="contacts rv">
+          <span>Телефон: <a href="tel:+70000000000">+7 (000) 000-00-00</a></span>
+          <span>Почта: <a href="mailto:hello@example.ru">hello@example.ru</a></span>
+          <span>Telegram: <a href="#">@company</a></span>
+        </div>
+      </div>
+      <form class="rv" id="form" novalidate>
+        <label>Как к вам обращаться<input name="name" required autocomplete="name"></label>
+        <label>Телефон или Telegram<input name="contact" required></label>
+        <label>Что нужно сделать
+          <select name="type">
+            <option>Веб-сервис или CRM</option>
+            <option>Мобильное приложение</option>
+            <option>Автоматизация, бот</option>
+            <option>Пока не знаю – нужна консультация</option>
+          </select></label>
+        <label>Коротко о задаче<textarea name="msg" placeholder="Например: нужен учёт заказов для трёх филиалов"></textarea></label>
+        <button class="btn" type="submit">Обсудить проект</button>
+        <small>Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных.</small>
+        <div class="ok"><h3>Заявка отправлена</h3><p>Свяжемся с вами в течение рабочего дня.</p></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© Северный код, 2026</span><span>Разработка программного обеспечения</span></div>
+</footer>
+
+<script>
+(function(){
+  var top=document.getElementById('top');
+  addEventListener('scroll',function(){top.classList.toggle('is-scrolled',scrollY>8)},{passive:true});
+  var els=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){io.observe(el)});
+  } else els.forEach(function(el){el.classList.add('in')});
+  var f=document.getElementById('form');
+  f.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var bad=[].filter.call(f.querySelectorAll('[required]'),function(i){return !i.value.trim()});
+    bad.forEach(function(i){i.style.borderColor='#d14343'});
+    if(bad.length){bad[0].focus();return}
+    f.classList.add('is-sent');
+  });
+})();
+</script>
+</body>
+</html>
